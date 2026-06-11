@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Profile</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <h2>User Profile</h2>
+
+  <div class="card">
+
+  <h3>My Account</h3>
+
+  <div id="profile">Loading...</div>
+
+  <br>
+
+  <button onclick="logout()">Logout</button>
+
+</div>
+<script src="auth.js"></script>
+  <script>
+   if (!localStorage.getItem("token")) {
+  window.location.href = "login.html";
+} 
+    async function loadProfile() {
+      const token = localStorage.getItem("token");
+      console.log("TOKEN FROM STORAGE:", token);
+      const res = await fetch("http://localhost:5000/profile", {
+        method: "GET",
+        headers: {
+          "Authorization": token
+        }
+      });
+
+      const data = await res.json();
+      console.log("PROFILE DATA:", data);
+
+     document.getElementById("profile").innerHTML = `
+<div class="profile-card">
+
+    <img
+      src="${data.photo || 'https://via.placeholder.com/200'}"
+      width="200"
+    >
+
+    <h2>${data.fullname || ""}</h2>
+
+    <p><b>Email:</b> ${data.email || ""}</p>
+
+    <p><b>Age:</b> ${data.age || ""}</p>
+
+    <p><b>Gender:</b> ${data.gender || ""}</p>
+
+    <p><b>Religion:</b> ${data.religion || ""}</p>
+
+    <p><b>City:</b> ${data.city || ""}</p>
+
+    <p><b>Occupation:</b> ${data.occupation || ""}</p>
+
+    <p><b>Bio:</b> ${data.bio || ""}</p>
+</div>
+`;
+    }
+
+    loadProfile();
+    function logout() {
+
+  localStorage.removeItem("token");
+
+  alert("Logged Out");
+
+  window.location.href = "login.html";
+
+}
+  </script>
+
+</body>
+</html>

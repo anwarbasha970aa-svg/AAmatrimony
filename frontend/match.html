@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Matches</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h2>My Matches ❤️</h2>
+
+
+
+<div id="matches"></div>
+<script src="auth.js"></script>
+
+<script>
+
+async function loadMatches() {
+
+  const userId = getUserId();
+
+  try {
+
+    const res = await fetch("http://localhost:5000/matches/" + userId);
+
+    const data = await res.json();
+
+    console.log("MATCHES:", data);
+
+    let html = "";
+
+    if (data.length === 0) {
+      html = "<p>No matches found</p>";
+    }
+
+    data.forEach(p => {
+
+      html += `
+        <div style="border:1px solid green; padding:10px; margin:10px;">
+          <h3>Matched Profile</h3>
+          <p>User ID: ${p.user_id}</p>
+          <p>Age: ${p.age}</p>
+          <p>Gender: ${p.gender}</p>
+          <p>City: ${p.city}</p>
+          <p>Religion: ${p.religion}</p>
+        </div>
+      `;
+    });
+
+    document.getElementById("matches").innerHTML = html;
+
+  } catch (error) {
+    console.log(error);
+  }
+}
+loadMatches();
+</script>
+
+</body>
+</html>

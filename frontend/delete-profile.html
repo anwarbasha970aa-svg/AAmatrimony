@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Delete Profile</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h2>Delete Profile</h2>
+
+<p>This action cannot be undone.</p>
+
+<button onclick="deleteProfile()">
+Delete My Profile
+</button>
+
+<script src="auth.js"></script>
+
+<script>
+
+async function deleteProfile() {
+
+    const userId = getUserId();
+
+    const confirmDelete =
+        confirm("Are you sure?");
+
+    if (!confirmDelete) {
+        return;
+    }
+
+    try {
+
+        const res = await fetch(
+            "http://localhost:5000/profile/" + userId,
+            {
+                method: "DELETE"
+            }
+        );
+
+        const data = await res.json();
+
+        alert(data.message);
+
+        localStorage.removeItem("token");
+
+        window.location.href = "index.html";
+
+    } catch(error) {
+
+        console.log(error);
+
+        alert("Delete Failed");
+
+    }
+
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Matrimony Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<h2>Dashboard</h2>
+
+<p id="welcome"></p>
+
+<button onclick="go('profile.html')">👤 View Profile</button>
+<br><br>
+
+<button onclick="go('create-profile.html')">📝 Create Profile</button>
+<br><br>
+
+<button onclick="go('search.html')">🔍 Search Profiles</button>
+<br><br>
+<button onclick="location.href='upload-photo.html'">Upload Photo
+</button>
+<br><br>
+<button onclick="go('received_interest.html')">
+❤️ Received Interests
+</button>
+<br><br>
+
+<button onclick="go('matches.html')">💕 Matches</button>
+<br><br>
+
+<button onclick="logout()">🚪 Logout</button>
+<button onclick="go('edit-profile.html')">
+✏️ Edit Profile
+</button>
+
+<br><br>
+<button onclick="go('delete-profile.html')">
+🗑 Delete Profile
+</button>
+
+<br><br>
+<script>
+
+// 🔐 CHECK LOGIN
+const token = localStorage.getItem("token");
+
+if (!token) {
+  window.location.href = "index.html";
+}
+
+// NAVIGATION
+function go(page) {
+  window.location.href = page;
+}
+
+// LOGOUT
+function logout() {
+  localStorage.removeItem("token");
+  window.location.href = "index.html";
+}
+
+// OPTIONAL: WELCOME MESSAGE
+document.getElementById("welcome").innerText =
+  "Welcome to Matrimony Dashboard ❤️";
+
+</script>
+
+</body>
+</html>

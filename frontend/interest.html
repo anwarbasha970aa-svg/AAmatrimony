@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Send Interest</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h2>Send Interest ❤️</h2>
+
+<input id="from_user" placeholder="Your User ID">
+<br><br>
+
+<input id="to_user" placeholder="Target User ID">
+<br><br>
+
+<button onclick="sendInterest()">Send Interest</button>
+
+<p id="msg"></p>
+
+<script>
+
+async function sendInterest() {
+
+  const from_user = document.getElementById("from_user").value;
+  const to_user = document.getElementById("to_user").value;
+
+  try {
+
+    const res = await fetch("http://localhost:5000/interest", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ from_user, to_user })
+    });
+
+    const data = await res.json();
+
+    console.log("RESPONSE:", data);
+
+    document.getElementById("msg").innerText = data.message;
+
+  } catch (error) {
+    console.log(error);
+    document.getElementById("msg").innerText = "Error sending interest";
+  }
+}
+
+</script>
+
+</body>
+</html>

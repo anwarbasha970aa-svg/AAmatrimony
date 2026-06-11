@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Register - Matrimony</title>
+<link rel="stylesheet" href="style.css">
+  <!-- CSS -->
+  <link rel="stylesheet" href="style.css">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+
+<h2>Register</h2>
+
+<div class="card">
+
+  <input type="text" id="fullname" placeholder="Full Name">
+  <br>
+
+  <input type="email" id="email" placeholder="Email">
+  <br>
+
+  <input type="password" id="password" placeholder="Password">
+  <br>
+
+  <button onclick="register()">Register</button>
+
+  <p id="msg"></p>
+
+</div>
+
+<script>
+
+async function register() {
+
+  const fullname = document.getElementById("fullname").value;
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  try {
+
+    const res = await fetch("http://localhost:5000/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        fullname,
+        email,
+        password
+      })
+    });
+
+    const data = await res.json();
+
+    console.log("REGISTER RESPONSE:", data);
+
+    if (res.ok) {
+
+      document.getElementById("msg").innerText = "Registration Successful! Redirecting...";
+
+      setTimeout(() => {
+        window.location.href = "index.html";
+      }, 1500);
+
+    } else {
+      document.getElementById("msg").innerText = data.message || "Registration Failed";
+    }
+
+  } catch (error) {
+    console.log(error);
+    document.getElementById("msg").innerText = "Server Error";
+  }
+}
+
+</script>
+
+</body>
+</html>

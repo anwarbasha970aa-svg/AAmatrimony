@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Create Profile</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+```
+<h2>Create Matrimony Profile</h2>
+
+<input type="number" id="age" placeholder="Age">
+<br><br>
+
+<input type="text" id="gender" placeholder="Gender">
+<br><br>
+
+<input type="text" id="religion" placeholder="Religion">
+<br><br>
+
+<input type="text" id="city" placeholder="City">
+<br><br>
+
+<button onclick="createProfile()">
+    Save Profile
+</button>
+
+<br><br>
+
+<div id="message"></div>
+
+<script>
+
+    async function createProfile() {
+
+        const age = document.getElementById("age").value;
+        const gender = document.getElementById("gender").value;
+        const religion = document.getElementById("religion").value;
+        const city = document.getElementById("city").value;
+
+        const token = localStorage.getItem("token");
+
+        try {
+
+            const res = await fetch(
+                "http://localhost:5000/profile",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": token
+                    },
+                    body: JSON.stringify({
+                        age,
+                        gender,
+                        religion,
+                        city
+                    })
+                }
+            );
+
+            const data = await res.json();
+
+            console.log(data);
+
+            document.getElementById("message").innerHTML =
+                data.message;
+
+            alert(data.message);
+
+        } catch (error) {
+
+            console.log(error);
+
+            alert("Error Creating Profile");
+
+        }
+
+    }
+
+</script>
+```
+
+</body>
+</html>

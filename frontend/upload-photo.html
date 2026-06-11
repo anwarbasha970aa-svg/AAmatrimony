@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Upload Photo</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+```
+<h2>Upload Profile Photo</h2>
+
+<input type="file" id="photo">
+
+<br><br>
+
+<input type="number" id="profileId" placeholder="Enter Profile ID">
+
+<br><br>
+
+<button onclick="uploadPhoto()">
+    Upload Photo
+</button>
+
+<br><br>
+
+<div id="message"></div>
+
+<script>
+
+    async function uploadPhoto() {
+
+        const file = document.getElementById("photo").files[0];
+
+        const profileId =
+            document.getElementById("profileId").value;
+
+        if (!file) {
+            alert("Please Select Photo");
+            return;
+        }
+
+        const token = localStorage.getItem("token");
+
+        const formData = new FormData();
+
+        formData.append("photo", file);
+
+        try {
+
+            const uploadResponse = await fetch(
+                "http://localhost:5000/upload-photo",
+                {
+                    method: "POST",
+                    headers: {
+                        "Authorization": token
+                    },
+                    body: formData
+                }
+            );
+
+            const uploadData =
+                await uploadResponse.json();
+
+            console.log(uploadData);
+
+            const filename = uploadData.file;
+
+            const saveResponse = await fetch(
+                "http://localhost:5000/profile/photo/" + profileId,
+                {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        photo: filename
+                    })
+                }
+            );
+
+            const saveData =
+                await saveResponse.json();
+
+            console.log(saveData);
+
+            document.getElementById("message").innerHTML =
+                saveData.message;
+
+            alert("Photo Uploaded Successfully");
+
+        } catch (error) {
+
+            console.log(error);
+
+            alert("Upload Failed");
+
+        }
+
+    }
+
+</script>
+```
+
+</body>
+</html>

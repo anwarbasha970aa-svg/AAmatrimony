@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Received Interests</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h2>Received Interests 💌</h2>
+
+
+<div id="interests"></div>
+<script src="auth.js"></script>
+
+<script>
+
+async function loadInterests() {
+
+  const userId = getUserId();
+
+  try {
+
+    const res = await fetch(
+      "http://localhost:5000/interests/received/" + userId
+    );
+
+    const data = await res.json();
+
+    console.log( data);
+
+    let html = "";
+
+    data.forEach(i => {
+
+      html += `
+        <div style="border:1px solid black; padding:10px; margin:10px;">
+          <p>From User ID: ${i.from_user}</p>
+          <p>Status: ${i.status || "pending"}</p>
+
+          <button onclick="updateStatus(${i.id}, 'accepted')">Accept</button>
+          <button onclick="updateStatus(${i.id}, 'rejected')">Reject</button>
+        </div>
+      `;
+    });
+
+    document.getElementById("interests").innerHTML = html;
+
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+// UPDATE STATUS (ACCEPT / REJECT)
+async function updateStatus(id, status) {
+
+  try {
+
+    const res = await fetch("http://localhost:5000/interest/" + id, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ status })
+    });
+
+    const data = await res.json();
+
+    alert(data.message);
+
+     // refresh list
+
+  } catch (error) {
+    console.log(error);
+  }
+}
+loadInterests();
+</script>
+
+</body>
+</html>

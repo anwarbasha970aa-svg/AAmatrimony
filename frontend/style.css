@@ -1,0 +1,126 @@
+/* Global Styling */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f6f9;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+:root {
+  --primary: #8b0000;
+  --secondary: gold;
+  --bg: #f5f5f5;
+}
+/* Headings */
+h2 {
+    text-align:center;
+  color: #333;
+  margin-top: 20px;
+}
+img {
+  max-width: 100%;
+  height: auto;
+}
+/* NAVBAR */
+.navbar {
+  background: darkred;
+  color: white;
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.navbar a {
+  color: white;
+  margin: 10px;
+  text-decoration: none;
+}
+/* Input fields */
+input {
+  width: 250px;
+  padding: 10px;
+  margin: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+/* HERO */
+.hero {
+  text-align: center;
+  padding: 80px;
+  background: lightpink;
+}
+/* Buttons */
+button {
+  padding: 10px 15px;
+  background-color: #ff4d6d;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 5px;
+}
+
+button:hover {
+  background-color: #e6004c;
+}
+
+/* Card box (for profiles/matches/interests) */
+.card {
+  background: white;
+  padding: 15px;
+  margin: 10px auto;
+  width: 300px;
+  border-radius: 10px;
+  box-shadow: 0px 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Message text */
+#msg {
+  color: green;
+  font-weight: bold;
+}
+.profile-card{
+    width:350px;
+    margin:auto;
+    background:white;
+    padding:20px;
+    border-radius:15px;
+    box-shadow:0px 0px 10px gray;
+    text-align:center;
+}
+
+.profile-card img{
+    border-radius:10px;
+    margin-bottom:15px;
+}
+
+.profile-card p{
+    margin:8px 0;
+}
+/* FOOTER */
+footer {
+  text-align: center;
+  background: black;
+  color: white;
+  padding: 10px;
+}
+@media (max-width: 768px) {
+
+  .navbar {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .hero {
+    padding: 40px;
+    height: auto;
+  }
+
+  .feature-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .card {
+    margin: 10px 0;
+  }
+}

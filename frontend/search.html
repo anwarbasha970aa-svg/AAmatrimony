@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Search Profiles</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+
+<h2>Search Profiles</h2>
+
+<button onclick="window.location.href='dashboard.html'">
+    Dashboard
+</button>
+
+<br><br>
+
+<div id="profiles">
+    Loading Profiles...
+</div>
+<script src="auth.js"></script>
+
+<script>
+
+    async function loadProfiles() {
+
+        try {
+
+            const response = await fetch(
+                "http://localhost:5000/profiles"
+            );
+
+            const profiles = await response.json();
+
+            let output = "";
+
+            if (profiles.length === 0) {
+
+                output = "<h3>No Profiles Found</h3>";
+
+            } else {
+
+                profiles.forEach(profile => {
+
+                    output += `
+                    <div class="card">
+                      <img src="${profile.photo || 'https://via.placeholder.com/150'}" width="150">
+
+                       <h3>${profile.gender || "Profile"}</h3>
+
+                        <p><b>Age:</b> ${profile.age || ""}</p>
+
+                        <p><b>Gender:</b> ${profile.gender || ""}</p>
+
+                        <p><b>Religion:</b> ${profile.religion || ""}</p>
+
+                        <p><b>Caste:</b> ${profile.caste || ""}</p>
+
+                        <p><b>Occupation:</b> ${profile.occupation || ""}</p>
+
+                        <p><b>City:</b> ${profile.city || ""}</p>
+
+                        <p><b>Bio:</b> ${profile.bio || ""}</p>
+
+                        <button onclick="sendInterest(${profile.user_id})">
+                            Send Interest
+                        </button>
+
+                    </div>
+
+                    <br>
+                    `;
+
+                });
+
+            }
+
+            document.getElementById("profiles").innerHTML = output;
+
+        } catch (error) {
+
+            console.log(error);
+
+            document.getElementById("profiles").innerHTML =
+                "<h3>Error Loading Profiles</h3>";
+
+        }
+
+    }
+
+    async function sendInterest(toUser) {
+
+        const fromUser = getUserId();
+
+if (!fromUser) {
+    alert("Please Login First");
+    return;
+}
+
+        try {
+
+            const response = await fetch(
+                "http://localhost:5000/interest",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        from_user: fromUser,
+                        to_user: toUser
+                    })
+                }
+            );
+
+            const data = await response.json();
+
+            alert(data.message);
+
+        } catch (error) {
+
+            console.log(error);
+
+            alert("Error Sending Interest");
+
+        }
+
+    }
+
+    loadProfiles();
+
+</script>
+```
+
+</body>
+</html>  
