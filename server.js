@@ -570,6 +570,8 @@ app.get("/search", async (req, res) => {
 
   res.json(result.rows);
 });
-app.listen(5000, () => {
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
   console.log("Server Running");
 });
