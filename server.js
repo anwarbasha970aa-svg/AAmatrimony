@@ -22,6 +22,7 @@ app.use(cors({
 const helmet = require("helmet");
 app.use(helmet());
 app.use(express.json());
+app.use(express.static(path.join(__dirname, "frontend")));
 
 const path = require("path");
 function verifyAdmin(req, res, next) {
@@ -69,7 +70,7 @@ function verifyToken(req, res, next) {
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.send("Matrimony API Running");
+  res.sendFile(path.join(__dirname, "frontend", "index.html"));
 });
 
 app.post("/register", async (req, res) => {
