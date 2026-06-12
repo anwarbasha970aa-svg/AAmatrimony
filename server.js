@@ -1,8 +1,10 @@
+
 const cors = require("cors");
 const express = require("express");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const multer = require("multer");
+const path = require("path");
 const pool = require("./config/db");
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -24,7 +26,7 @@ app.use(helmet());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "frontend")));
 
-const path = require("path");
+
 function verifyAdmin(req, res, next) {
   const token = req.headers.authorization;
 
