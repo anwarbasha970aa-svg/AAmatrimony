@@ -74,6 +74,14 @@ app.use(express.json());
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "frontend", "index.html"));
 });
+app.get("/testdb", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT table_name FROM information_schema.tables WHERE table_schema='public'");
+    res.json(result.rows);
+  } catch (err) {
+    res.json(err.message);
+  }
+});
 
 app.post("/register", async (req, res) => {
   try {
