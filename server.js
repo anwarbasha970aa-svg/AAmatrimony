@@ -178,6 +178,20 @@ app.get("/profiles/religion/:religion", async (req, res) => {
     });
   }
 });
+app.get("/dbcheck", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT * FROM users LIMIT 1");
+    res.json({
+      success: true,
+      rows: result.rows
+    });
+  } catch (err) {
+    res.json({
+      success: false,
+      error: err.message
+    });
+  }
+});
 app.get("/profiles/age/:age", async (req, res) => {
   try {
     const { age } = req.params;
