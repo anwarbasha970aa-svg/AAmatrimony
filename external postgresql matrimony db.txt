@@ -1,0 +1,1 @@
+postgresql://matrimony_db_l79d_user:16kicgQmVNhDp4oiZScCfGczXUquK3JO@dpg-d8lb3k0js32c73e6rbt0-a.oregon-postgres.render.com/matrimony_db_l79d

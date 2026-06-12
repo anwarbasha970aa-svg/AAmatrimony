@@ -1,5 +1,5 @@
 
-const API = "http://localhost:5000";
+const API = "https://aamatrimony.onrender.com/";
 
 /* =========================
    TOKEN HELPERS
