@@ -21,8 +21,8 @@ const app = express();
 app.use(cors({
   origin: "*"
 }));
-const helmet = require("helmet");
-app.use(helmet());
+//const helmet = require("helmet");
+//app.use(helmet());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "frontend")));
 
