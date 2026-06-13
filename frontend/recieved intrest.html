@@ -13,7 +13,7 @@
 <script src="auth.js"></script>
 
 <script>
-
+const BASE_URL = "https://aamatrimony.onrender.com";
 async function loadInterests() {
 
   const userId = getUserId();
@@ -21,7 +21,7 @@ async function loadInterests() {
   try {
 
     const res = await fetch(
-      "http://localhost:5000/interests/received/" + userId
+       `${BASE_URL}/interests/received/${userId}`
     );
 
     const data = await res.json();
@@ -55,7 +55,7 @@ async function updateStatus(id, status) {
 
   try {
 
-    const res = await fetch("http://localhost:5000/interest/" + id, {
+    const res = await fetch(`${BASE_URL}/interest/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json"

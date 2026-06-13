@@ -19,7 +19,7 @@
 <p id="msg"></p>
 
 <script>
-
+const BASE_URL = "https://aamatrimony.onrender.com";
 async function sendInterest() {
 
   const from_user = document.getElementById("from_user").value;
@@ -27,7 +27,7 @@ async function sendInterest() {
 
   try {
 
-    const res = await fetch("http://localhost:5000/interest", {
+    const res = await fetch(`${BASE_URL}/interest`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"

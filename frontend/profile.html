@@ -21,13 +21,14 @@
 </div>
 <script src="auth.js"></script>
   <script>
+    const BASE_URL = "https://aamatrimony.onrender.com";
    if (!localStorage.getItem("token")) {
   window.location.href = "login.html";
 } 
     async function loadProfile() {
       const token = localStorage.getItem("token");
       console.log("TOKEN FROM STORAGE:", token);
-      const res = await fetch("http://localhost:5000/profile", {
+     const res = await fetch(`${BASE_URL}/profile`, {
         method: "GET",
         headers: {
           "Authorization": token

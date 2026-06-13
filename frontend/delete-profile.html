@@ -18,7 +18,7 @@ Delete My Profile
 <script src="auth.js"></script>
 
 <script>
-
+const BASE_URL = "https://aamatrimony.onrender.com";
 async function deleteProfile() {
 
     const userId = getUserId();
@@ -33,7 +33,7 @@ async function deleteProfile() {
     try {
 
         const res = await fetch(
-            "http://localhost:5000/profile/" + userId,
+           `${BASE_URL}/profile/${userId}`,
             {
                 method: "DELETE"
             }

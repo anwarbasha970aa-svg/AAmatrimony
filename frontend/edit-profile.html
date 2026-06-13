@@ -42,7 +42,7 @@ Update Profile
 <script src="auth.js"></script>
 
 <script>
-
+const BASE_URL = "https://aamatrimony.onrender.com";
 async function updateProfile() {
 
     const userId = getUserId();
@@ -71,7 +71,7 @@ async function updateProfile() {
     try {
 
         const res = await fetch(
-            "http://localhost:5000/profile/" + userId,
+           `${BASE_URL}/profile/${userId}`,
             {
                 method: "PUT",
                 headers: {

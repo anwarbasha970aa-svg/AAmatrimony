@@ -14,14 +14,14 @@
 <script src="auth.js"></script>
 
 <script>
-
+const BASE_URL = "https://aamatrimony.onrender.com";
 async function loadMatches() {
 
   const userId = getUserId();
 
   try {
 
-    const res = await fetch("http://localhost:5000/matches/" + userId);
+    const res = await fetch(`${BASE_URL}/matches/${userId}`);
 
     const data = await res.json();
 

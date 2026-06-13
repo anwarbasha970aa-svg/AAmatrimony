@@ -4,7 +4,7 @@
   <title>Register - Matrimony</title>
 <link rel="stylesheet" href="style.css">
   <!-- CSS -->
-  <link rel="stylesheet" href="style.css">
+ 
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
@@ -31,7 +31,7 @@
 </div>
 
 <script>
-
+const BASE_URL = "https://aamatrimony.onrender.com";
 async function register() {
 
   const fullname = document.getElementById("fullname").value;
@@ -40,7 +40,7 @@ async function register() {
 
   try {
 
-    const res = await fetch("http://localhost:5000/register", {
+    const res = await fetch(`${BASE_URL}/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"

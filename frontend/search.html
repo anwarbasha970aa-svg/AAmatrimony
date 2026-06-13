@@ -22,13 +22,13 @@
 <script src="auth.js"></script>
 
 <script>
-
+const BASE_URL = "https://aamatrimony.onrender.com";
     async function loadProfiles() {
 
         try {
 
             const response = await fetch(
-                "http://localhost:5000/profiles"
+                `${BASE_URL}/profiles`
             );
 
             const profiles = await response.json();
@@ -101,7 +101,7 @@ if (!fromUser) {
         try {
 
             const response = await fetch(
-                "http://localhost:5000/interest",
+                 `${BASE_URL}/interest`,
                 {
                     method: "POST",
                     headers: {
