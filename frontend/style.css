@@ -124,3 +124,33 @@ footer {
     margin: 10px 0;
   }
 }
+/* Your existing CSS */
+
+footer{
+    background:#222;
+    color:white;
+}
+
+/* ADD NEW CSS BELOW THIS */
+
+header{
+  background:#8e44ad;
+  color:white;
+  text-align:center;
+  padding:15px;
+}
+
+.hero{
+  text-align:center;
+  margin-top:40px;
+}
+
+.hero img{
+  border-radius:10px;
+}
+
+button{
+  padding:10px 20px;
+  margin:5px;
+  cursor:pointer;
+}

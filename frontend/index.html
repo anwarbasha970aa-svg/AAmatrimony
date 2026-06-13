@@ -1,65 +1,35 @@
 <!DOCTYPE html>
+
 <html>
 <head>
-  <title>Matrimony Login</title>
+  <title>AA Matrimony</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<h2>Login</h2>
+<header>
+  <h1>AA Matrimony</h1>
+</header>
 
-<input type="email" id="email" placeholder="Enter Email">
-<br><br>
+<div class="hero">
 
-<input type="password" id="password" placeholder="Enter Password">
-<br><br>
+  <img src="images/homepage.png" alt="Matrimony Banner" width="400">
 
-<button onclick="login()">Login</button>
+  <h2>Find Your Perfect Life Partner</h2>
 
-<p id="msg"></p>
+  <p>Trusted Matrimony Platform</p>
 
-<script>
-const BASE_URL = "https://aamatrimony.onrender.com";
-async function login() {
+  <br>
 
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+  <a href="login.html">
+    <button>Login</button>
+  </a>
 
-  try {
+  <a href="register.html">
+    <button>Register Free</button>
+  </a>
 
-    const res = await fetch("/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ email, password })
-    });
-
-    const data = await res.json();
-
-    console.log("LOGIN RESPONSE:", data);
-
-    if (data.token) {
-
-      localStorage.setItem("token", data.token);
-
-      document.getElementById("msg").innerText = "Login Success";
-
-      setTimeout(() => {
-        window.location.href = "dashboard.html";
-      }, 1000);
-
-    } else {
-      document.getElementById("msg").innerText = data.message;
-    }
-
-  } catch (error) {
-    console.log(error);
-    document.getElementById("msg").innerText = "Server Error";
-  }
-}
-
-</script>
+</div>
 
 </body>
 </html>
