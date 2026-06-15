@@ -274,7 +274,7 @@ app.get("/profile/:id", verifyToken, async (req, res) => {
 
     const profile = result.rows[0];
     if (profile.photo) {
-  profile.photo = "http://localhost:5000/uploads/" + profile.photo;
+ profile.photo = "http://localhost:5000/uploads/" + profile.photo;
 }
 
 res.json(profile);
@@ -572,14 +572,34 @@ app.get("/profile", async (req, res) => {
     const decoded = jwt.verify(token, "mysecretkey");
 
     const result = await pool.query(
-      "SELECT id, fullname, email FROM users WHERE id=$1",
+      `
+      SELECT
+        u.id,
+        u.fullname,
+        u.email,
+        p.age,
+        p.gender,
+        p.religion,
+        p.city,
+        p.education,
+        p.occupation,
+        p.bio,
+        p.photo
+      FROM users u
+      LEFT JOIN profiles p
+      ON u.id = p.user_id
+      WHERE u.id = $1
+      `,
       [decoded.id]
     );
 
     res.json(result.rows[0]);
 
   } catch (error) {
-    res.status(401).json({ message: "Invalid Token" });
+    console.log(error);
+    res.status(401).json({
+      message: "Invalid Token"
+    });
   }
 });
 app.get("/search", async (req, res) => {
