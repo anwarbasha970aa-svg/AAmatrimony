@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Manage Users</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h2>Manage Users</h2>
+
+<button onclick="window.location.href='admin-dashboard.html'">
+  Dashboard
+</button>
+
+<br><br>
+
+<div id="users">
+Loading Users...
+</div>
+
+<script>
+
+const BASE_URL = "https://aamatrimony.onrender.com";
+
+async function loadUsers() {
+
+  const token = localStorage.getItem("adminToken");
+
+  const res = await fetch(
+    `${BASE_URL}/admin/users`,
+    {
+      headers: {
+        Authorization: token
+      }
+    }
+  );
+
+  const users = await res.json();
+
+  let html = "";
+
+  users.forEach(user => {
+
+    html += `
+      <div class="card">
+
+        <h3>${user.fullname}</h3>
+
+        <p>${user.email}</p>
+
+        <button onclick="deleteUser(${user.id})">
+          Delete User
+        </button>
+
+      </div>
+      <br>
+    `;
+  });
+
+  document.getElementById("users").innerHTML = html;
+}
+
+async function deleteUser(id) {
+
+  const token = localStorage.getItem("adminToken");
+
+  if (!confirm("Delete User?")) return;
+
+  const res = await fetch(
+    `${BASE_URL}/admin/user/${id}`,
+    {
+      method: "DELETE",
+      headers: {
+        Authorization: token
+      }
+    }
+  );
+
+  const data = await res.json();
+
+  alert(data.message);
+
+  loadUsers();
+}
+
+loadUsers();
+
+</script>
+
+</body>
+</html>

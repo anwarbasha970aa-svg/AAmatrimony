@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Manage Profiles</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h2>Manage Profiles</h2>
+
+<button onclick="window.location.href='admin-dashboard.html'">
+  Dashboard
+</button>
+
+<br><br>
+
+<div id="profiles">
+Loading Profiles...
+</div>
+
+<script>
+
+const BASE_URL = "https://aamatrimony.onrender.com";
+
+async function loadProfiles() {
+
+  const token = localStorage.getItem("adminToken");
+
+  const res = await fetch(
+    `${BASE_URL}/admin/profiles`,
+    {
+      headers: {
+        Authorization: token
+      }
+    }
+  );
+
+  const profiles = await res.json();
+
+  let html = "";
+
+  profiles.forEach(profile => {
+
+    html += `
+      <div class="card">
+
+        <h3>${profile.fullname || "No Name"}</h3>
+
+        <p>Age: ${profile.age || ""}</p>
+
+        <p>Gender: ${profile.gender || ""}</p>
+
+        <p>Religion: ${profile.religion || ""}</p>
+
+        <p>City: ${profile.city || ""}</p>
+
+      </div>
+
+      <br>
+    `;
+  });
+
+  document.getElementById("profiles").innerHTML = html;
+}
+
+loadProfiles();
+
+</script>
+
+</body>
+</html>
