@@ -217,3 +217,8 @@ color:white;
 text-align:center;
 padding:15px;
 }
+.logo img{
+  width:40px;
+  height:40px;
+  border-radius:50%;
+}

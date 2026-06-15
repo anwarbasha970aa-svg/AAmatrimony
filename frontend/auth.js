@@ -1,5 +1,5 @@
 
-const API = "https://aamatrimony.onrender.com/";
+const API = "https://aamatrimony.onrender.com";
 
 /* =========================
    TOKEN HELPERS
