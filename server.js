@@ -592,7 +592,15 @@ app.get("/profile", async (req, res) => {
       `,
       [decoded.id]
     );
+const profile = result.rows[0];
 
+if (profile && profile.photo) {
+  profile.photo =
+    "https://aamatrimony.onrender.com/uploads/" +
+    profile.photo;
+}
+
+res.json(profile);
     res.json(result.rows[0]);
 
   } catch (error) {
