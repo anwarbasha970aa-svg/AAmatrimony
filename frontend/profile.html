@@ -38,8 +38,7 @@
       });
 
       const data = await res.json();
-      document.getElementById("profileImg").src =
-  data.photo || "https://via.placeholder.com/200"; 
+  
 
       console.log(data);
 
@@ -47,9 +46,9 @@
 <div class="profile-card">
 
     <img
-      id="profileImg" src="https://via.placeholder.com/200"}
+      src="${data.photo || 'https://via.placeholder.com/200'}"
       width="200"
-    >
+    />
 
     <h2>${data.fullname || ""}</h2>
 
