@@ -1,3 +1,6 @@
+require("dotenv").config();
+
+
 const cloudinary = require("cloudinary").v2;
 const cors = require("cors");
 const express = require("express");
@@ -9,7 +12,7 @@ const pool = require("./config/db");
 cloudinary.config({
   cloud_name: "dbmdh605t",
   api_key: "335719239249925",
-  api_secret: "YOUR_API_SECRET"
+  api_secret: process.env.CLOUDINARY_SECRET
 });
 //const storage = multer.diskStorage({
 //  destination: function (req, file, cb) {
@@ -40,7 +43,7 @@ function verifyAdmin(req, res, next) {
   }
 
   try {
-    const decoded = jwt.verify(token, "mysecretkey");
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     if (decoded.role !== "admin") {
       return res.status(403).json({ message: "Admin Only" });
@@ -64,7 +67,7 @@ function verifyToken(req, res, next) {
   }
 
   try {
-    const verified = jwt.verify(token, "mysecretkey");
+    const verified = jwt.verify(token, process.env.JWT_SECRET);
     req.user = verified;
     next();
   } catch (error) {
@@ -74,7 +77,7 @@ function verifyToken(req, res, next) {
   }
 }
 
-app.use(express.json());
+
 
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "frontend", "index.html"));
@@ -123,7 +126,7 @@ app.post("/profile", async (req, res) => {
     }
 
     // 2. DECODE TOKEN
-    const decoded = jwt.verify(token, "mysecretkey");
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     // 3. AUTO USER ID FROM TOKEN
     const user_id = decoded.id;
@@ -135,7 +138,7 @@ app.post("/profile", async (req, res) => {
     );
 
     if (existing.rows.length > 0) {
-      return res.sendStatus(400).json({
+      return res.Status(400).json({
         message: "Profile already exists"
       });
     }
@@ -270,47 +273,65 @@ app.post("/upload-photo", verifyToken, upload.single("photo"), async (req, res) 
     });
   }
 });
-app.put("/profile/photo/:id", async (req, res) => {
+app.put("/profile/photo", verifyToken, async (req, res) => {
   try {
-    const { id } = req.params;
+
+    const user_id = req.user.id;
     const { photo } = req.body;
 
+    if (!photo) {
+      return res.status(400).json({
+        message: "Photo is required"
+      });
+    }
+
     await pool.query(
-      "UPDATE profiles SET photo=$1 WHERE id=$2",
-      [photo, id]
+      "UPDATE profiles SET photo=$1 WHERE user_id=$2",
+      [photo, user_id]
     );
 
     res.json({
-      message: "Photo Saved Successfully"
+      message: "Photo Updated Successfully"
     });
 
   } catch (error) {
     console.log(error);
     res.status(500).json({
-      message: "Error"
+      message: "Error updating photo"
     });
   }
 });
-app.get("/profile/:id", verifyToken, async (req, res) => {
+app.get("/profile/photo", verifyToken, async (req, res) => {
   try {
-    const { id } = req.params;
 
+    // 1. Get user id from token
+    const user_id = req.user.id;
+
+    // 2. Fetch photo from database
     const result = await pool.query(
-      "SELECT * FROM profiles WHERE id=$1",
-      [id]
+      "SELECT photo FROM profiles WHERE user_id=$1",
+      [user_id]
     );
 
-    const profile = result.rows[0];
-    if (profile.photo) {
- profile.photo = "http://localhost:5000/uploads/" + profile.photo;
-}
+    // 3. If profile not found
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        message: "Profile not found"
+      });
+    }
 
-res.json(profile);
+    // 4. Get photo value
+    const photo = result.rows[0].photo;
+
+    // 5. Return response
+    res.json({
+      photo: photo || "https://via.placeholder.com/200"
+    });
 
   } catch (error) {
-    console.log(error);
+    console.log("GET PHOTO ERROR:", error);
     res.status(500).json({
-      message: "Error"
+      message: "Server Error"
     });
   }
 });
@@ -479,7 +500,7 @@ app.post("/admin/login", async (req, res) => {
 
     const token = jwt.sign(
       { id: result.rows[0].id, role: "admin" },
-      "mysecretkey"
+      process.env.JWT_SECRET
     );
 
     res.json({
@@ -524,7 +545,7 @@ app.delete("/admin/user/:id", verifyAdmin, async (req, res) => {
 });
 app.get("/suggest/:userId", verifyToken, async (req, res) => {
   try {
-    const { userId } = req.params;
+    const  userId = req.user.id;
 
     const user = await pool.query(
       "SELECT * FROM profiles WHERE user_id=$1",
@@ -579,7 +600,7 @@ app.post("/login", async (req, res) => {
 
     const token = jwt.sign(
       { id: user.id },
-      "mysecretkey",
+      process.env.JWT_SECRET,
       { expiresIn: "1d" } // 🔥 ADDED SECURITY
     );
 
@@ -597,7 +618,7 @@ app.get("/profile", async (req, res) => {
   try {
     const token = req.headers.authorization;
 
-    const decoded = jwt.verify(token, "mysecretkey");
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     const result = await pool.query(
       `
@@ -624,13 +645,9 @@ app.get("/profile", async (req, res) => {
     );
 const profile = result.rows[0];
 
-if (profile && profile.photo) {
-  profile.photo =
-    "https://aamatrimony.onrender.com/uploads/" +
-    profile.photo;
-}
-
+// NO modification needed for Cloudinary URL
 res.json(profile);
+
    
 
   } catch (error) {
