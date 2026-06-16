@@ -704,12 +704,27 @@ app.put("/profile/:id", async (req, res) => {
   }
 });
 app.get("/search", async (req, res) => {
-  const city = req.query.city;
+  const { city, gender, religion } = req.query;
 
-  const result = await pool.query(
-    "SELECT * FROM profiles WHERE city=$1",
-    [city]
-  );
+  let query = "SELECT * FROM profiles WHERE 1=1";
+  let values = [];
+
+  if (city) {
+    values.push(city);
+    query += ` AND city = $${values.length}`;
+  }
+
+  if (gender) {
+    values.push(gender);
+    query += ` AND gender = $${values.length}`;
+  }
+
+  if (religion) {
+    values.push(religion);
+    query += ` AND religion = $${values.length}`;
+  }
+
+  const result = await pool.query(query, values);
 
   res.json(result.rows);
 });
