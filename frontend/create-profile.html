@@ -10,16 +10,32 @@
 ```
 <h2>Create Matrimony Profile</h2>
 
+<input type="text" id="fullname" placeholder="Full Name">
+<br><br>
+
+
 <input type="number" id="age" placeholder="Age">
 <br><br>
 
 <input type="text" id="gender" placeholder="Gender">
 <br><br>
 
+<input type="text" id="education" placeholder="Education">
+<br><br>
+
 <input type="text" id="religion" placeholder="Religion">
 <br><br>
 
 <input type="text" id="city" placeholder="City">
+<br><br>
+
+<input type="text" id="occupation" placeholder="Occupation">
+<br><br>
+
+<textarea id="about_me" placeholder="About Me"></textarea>
+<br><br>
+
+<textarea id="bio" placeholder="Bio"></textarea>
 <br><br>
 
 <button onclick="createProfile()">
@@ -33,12 +49,16 @@
 <script>
 const BASE_URL = "https://aamatrimony.onrender.com";
     async function createProfile() {
-
+       const fullname = document.getElementById("fullname").value;
         const age = document.getElementById("age").value;
         const gender = document.getElementById("gender").value;
+        const education = document.getElementById("education").value;
+    const occupation = document.getElementById("occupation").value;
+        const caste = document.getElementById("caste").value;
         const religion = document.getElementById("religion").value;
         const city = document.getElementById("city").value;
-
+         const about_me = document.getElementById("about_me").value;
+    const bio = document.getElementById("bio").value;
         const token = localStorage.getItem("token");
 
         try {

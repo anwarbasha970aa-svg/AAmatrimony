@@ -124,13 +124,13 @@ app.post("/profile", async (req, res) => {
     const user_id = decoded.id;
 
     // 4. GET FORM DATA (NO user_id FROM FRONTEND)
-    const { age, gender, religion, city } = req.body;
+    const { fullname, age, gender, religion, caste, education, occupation, city, about_me, bio } = req.body;
 
     // 5. INSERT INTO DB
     await pool.query(
-      `INSERT INTO profiles(user_id, age, gender, religion, city)
-       VALUES ($1,$2,$3,$4,$5)`,
-      [user_id, age, gender, religion, city]
+      `INSERT INTO profiles(user_id, fullname, age, gender, religion, caste, education, occupation, city, about_me, bio)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)`,
+      [user_id, fullname, age, gender, religion, caste, education, occupation, city, about_me, bio]
     );
 
     res.json({ message: "Profile Created Successfully" });
@@ -679,7 +679,7 @@ app.get("/search", async (req, res) => {
   const city = req.query.city;
 
   const result = await pool.query(
-    "SELECT * FROM users WHERE city=$1",
+    "SELECT * FROM profiles WHERE city=$1",
     [city]
   );
 
