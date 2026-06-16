@@ -10,8 +10,8 @@ const multer = require("multer");
 const path = require("path");
 const pool = require("./config/db");
 cloudinary.config({
-  cloud_name: "dbmdh605t",
-  api_key: "335719239249925",
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_SECRET
 });
 //const storage = multer.diskStorage({
