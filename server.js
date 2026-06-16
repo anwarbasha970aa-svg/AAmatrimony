@@ -574,8 +574,9 @@ app.get("/profile", async (req, res) => {
     const result = await pool.query(
       `
       SELECT
-        u.id,
-        u.fullname,
+        p.id,
+        p.user_id,
+        p.fullname,
         u.email,
         p.age,
         p.gender,
@@ -583,12 +584,13 @@ app.get("/profile", async (req, res) => {
         p.city,
         p.education,
         p.occupation,
+        p.about_me,
         p.bio,
         p.photo
-      FROM users u
-      LEFT JOIN profiles p
-      ON u.id = p.user_id
-      WHERE u.id = $1
+      FROM profiles p
+      LEFT JOIN users u
+      on p.user_id = u.id
+      WHERE p.user_id = $1
       `,
       [decoded.id]
     );
@@ -608,6 +610,69 @@ res.json(profile);
     res.status(401).json({
       message: error.message
     });
+  }
+});
+app.put("/profile/:id", async (req, res) => {
+  try {
+
+    const { id } = req.params;
+
+    const {
+      fullname,
+      age,
+      gender,
+      religion,
+      caste,
+      education,
+      occupation,
+      city,
+      about_me,
+      bio
+    } = req.body;
+
+    await pool.query(
+      `
+      UPDATE profiles
+      SET
+        fullname=$1,
+        age=$2,
+        gender=$3,
+        religion=$4,
+        caste=$5,
+        education=$6,
+        occupation=$7,
+        city=$8,
+        about_me=$9,
+        bio=$10
+      WHERE user_id=$11
+      `,
+      [
+        fullname,
+        age,
+        gender,
+        religion,
+        caste,
+        education,
+        occupation,
+        city,
+        about_me,
+        bio,
+        id
+      ]
+    );
+
+    res.json({
+      message: "Profile Updated Successfully"
+    });
+
+  } catch (error) {
+
+    console.log(error);
+
+    res.status(500).json({
+      message: "Error Updating Profile"
+    });
+
   }
 });
 app.get("/search", async (req, res) => {
