@@ -1,4 +1,4 @@
-
+const cloudinary = require("cloudinary").v2;
 const cors = require("cors");
 const express = require("express");
 const bcrypt = require("bcrypt");
@@ -6,17 +6,22 @@ const jwt = require("jsonwebtoken");
 const multer = require("multer");
 const path = require("path");
 const pool = require("./config/db");
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads/");
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + "-" + file.originalname);
-  }
+cloudinary.config({
+  cloud_name: "dbmdh605t",
+  api_key: "335719239249925",
+  api_secret: "YOUR_API_SECRET"
 });
+//const storage = multer.diskStorage({
+//  destination: function (req, file, cb) {
+  //  cb(null, "uploads/");
+  //},
+  //filename: function (req, file, cb) {
+    //cb(null, Date.now() + "-" + file.originalname);
+  //}
+//});
 
-const upload = multer({ storage });
-
+//const upload = multer({ storage });
+const upload = multer({ dest: "temp/" });
 const app = express();
 app.use(cors({
   origin: "*"
@@ -242,16 +247,26 @@ app.get("/profiles", async (req, res) => {
 
   }
 });
-app.post("/upload-photo", verifyToken, upload.single("photo"), (req, res) => {
+app.post("/upload-photo", verifyToken, upload.single("photo"), async (req, res) => {
   try {
+
+    const file = req.file;
+
+    if (!file) {
+      return res.status(400).json({ message: "No file selected" });
+    }
+
+    const result = await cloudinary.uploader.upload(file.path);
+
     res.json({
       message: "Photo Uploaded Successfully",
-      file: req.file.filename
+      file: result.secure_url
     });
+
   } catch (error) {
     console.log(error);
     res.status(500).json({
-      message: "Error"
+      message: "Upload Error"
     });
   }
 });
