@@ -123,6 +123,19 @@ app.post("/profile", async (req, res) => {
     // 3. AUTO USER ID FROM TOKEN
     const user_id = decoded.id;
 
+      // CHECK IF PROFILE ALREADY EXISTS
+    const existing = await pool.query(
+      "SELECT * FROM profiles WHERE user_id=$1",
+      [user_id]
+    );
+
+    if (existing.rows.length > 0) {
+      return res.json({
+        message: "Profile already exists"
+      });
+    }
+
+
     // 4. GET FORM DATA (NO user_id FROM FRONTEND)
     const { fullname, age, gender, religion, caste, education, occupation, city, about_me, bio } = req.body;
 
