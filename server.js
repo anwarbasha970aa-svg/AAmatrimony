@@ -135,7 +135,7 @@ app.post("/profile", async (req, res) => {
     );
 
     if (existing.rows.length > 0) {
-      return res.json({
+      return res.sendStatus(400).json({
         message: "Profile already exists"
       });
     }
