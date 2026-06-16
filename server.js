@@ -53,7 +53,7 @@ function verifyAdmin(req, res, next) {
     res.status(400).json({ message: "Invalid Token" });
   }
 }
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+//app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 function verifyToken(req, res, next) {
   const token = req.headers.authorization;
 
