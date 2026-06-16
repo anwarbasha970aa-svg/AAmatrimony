@@ -601,12 +601,12 @@ if (profile && profile.photo) {
 }
 
 res.json(profile);
-    res.json(result.rows[0]);
+   
 
   } catch (error) {
-    console.log(error);
+    console.log("PROFILE ERROR:", error);
     res.status(401).json({
-      message: "Invalid Token"
+      message: error.message
     });
   }
 });
