@@ -276,3 +276,13 @@ body{
   font-style: italic;
   color: gray;
 }
+.footer {
+    text-align: center;
+    padding: 20px;
+    background: #111;
+    color: white;
+}
+
+.footer .contact {
+    margin-top: 10px;
+}
