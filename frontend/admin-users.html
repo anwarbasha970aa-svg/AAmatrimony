@@ -48,6 +48,8 @@ async function loadUsers() {
 
         <p>${user.email}</p>
 
+        <p><b>Phone:</b> ${user.phone || "Not Available"}</p>
+        
         <button onclick="deleteUser(${user.id})">
           Delete User
         </button>

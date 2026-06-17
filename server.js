@@ -35,6 +35,14 @@ app.use(cors({
 //app.use(helmet());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "frontend")));
+router.get("/users", verifyAdmin, async (req, res) => {
+  const result = await pool.query(
+    "SELECT id, fullname, email, phone FROM users"
+  );
+
+  res.json(result.rows);
+});
+
 app.use("/api/admin", adminRoutes);
 
 function verifyAdmin(req, res, next) {
@@ -95,12 +103,12 @@ app.get("/testdb", async (req, res) => {
 
 app.post("/register", async (req, res) => {
   try {
-    const { fullname, email, password } = req.body;
+    const { fullname, email, phone, password } = req.body;
 
    const hashedPassword = await bcrypt.hash(password, 10);
 
 await pool.query(
-  "INSERT INTO users(fullname,email,password) VALUES($1,$2,$3)",
+  "INSERT INTO users(fullname,email, phone, password) VALUES($1,$2,$3)",
   [fullname, email, hashedPassword]
 );
 
