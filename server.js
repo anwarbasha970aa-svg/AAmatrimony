@@ -393,7 +393,7 @@ app.get("/interests/received/:userId", async (req, res) => {
     });
   }
 });
-app.put("/interest/:id", async (req, res) => {
+app.put("/interests/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const { status } = req.body;
