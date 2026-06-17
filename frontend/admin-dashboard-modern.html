@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial;
+      background: #f4f6f9;
+      display: flex;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: 220px;
+      height: 100vh;
+      background: #111827;
+      color: white;
+      padding: 20px;
+      position: fixed;
+    }
+
+    .sidebar h2 {
+      font-size: 18px;
+      margin-bottom: 20px;
+    }
+
+    .sidebar button {
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 10px;
+      border: none;
+      background: #1f2937;
+      color: white;
+      cursor: pointer;
+      border-radius: 6px;
+    }
+
+    .sidebar button:hover {
+      background: #374151;
+    }
+
+    /* MAIN */
+    .main {
+      margin-left: 240px;
+      padding: 20px;
+      width: 100%;
+    }
+
+    /* TOP CARDS */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+    }
+
+    .card {
+      background: white;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    /* INTEREST LIST */
+    .interest-card {
+      background: white;
+      padding: 15px;
+      margin-top: 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .badge {
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      color: white;
+    }
+
+    .pending { background: orange; }
+    .accepted { background: green; }
+    .rejected { background: red; }
+    .onhold { background: gray; }
+
+    button.action {
+      margin-right: 5px;
+      padding: 5px 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .accept { background: green; color: white; }
+    .reject { background: red; color: white; }
+    .hold { background: gray; color: white; }
+  </style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <h2>Admin Panel</h2>
+  <button onclick="loadData()">Dashboard</button>
+  <button onclick="location.href='admin-users.html'">Users</button>
+  <button onclick="location.href='admin-profiles.html'">Profiles</button>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <h2>Interest Dashboard</h2>
+
+  <div class="cards">
+    <div class="card">Total Interests: <span id="total">0</span></div>
+    <div class="card">Pending: <span id="pending">0</span></div>
+    <div class="card">Accepted: <span id="accepted">0</span></div>
+    <div class="card">Rejected: <span id="rejected">0</span></div>
+  </div>
+
+  <div id="list"></div>
+
+</div>
+
+<script>
+const token = localStorage.getItem("adminToken");
+
+async function loadData() {
+  const res = await fetch("/admin/interests", {
+    headers: { "Authorization": token }
+  });
+
+  const data = await res.json();
+
+  // COUNTS
+  document.getElementById("total").innerText = data.length;
+  document.getElementById("pending").innerText = data.filter(i => i.status === "pending").length;
+  document.getElementById("accepted").innerText = data.filter(i => i.status === "accepted").length;
+  document.getElementById("rejected").innerText = data.filter(i => i.status === "rejected").length;
+
+  // LIST
+  document.getElementById("list").innerHTML = data.map(i => `
+    <div class="interest-card">
+      <p><b>From:</b> ${i.from_user}</p>
+      <p><b>To:</b> ${i.to_user}</p>
+
+      <span class="badge ${i.status}">${i.status}</span>
+
+      <br><br>
+
+      <button class="action accept" onclick="update(${i.id}, 'accepted')">Accept</button>
+      <button class="action reject" onclick="update(${i.id}, 'rejected')">Reject</button>
+      <button class="action hold" onclick="update(${i.id}, 'onhold')">Hold</button>
+    </div>
+  `).join("");
+}
+
+async function update(id, status) {
+  await fetch(`/interests/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ status })
+  });
+
+  loadData();
+}
+
+loadData();
+setInterval(loadData, 3000);
+</script>
+
+</body>
+</html>
