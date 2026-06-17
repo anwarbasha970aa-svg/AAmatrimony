@@ -9,6 +9,7 @@ const jwt = require("jsonwebtoken");
 const multer = require("multer");
 const path = require("path");
 const pool = require("./config/db");
+const adminRoutes = require("./routes/adminRoutes");
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -26,6 +27,7 @@ cloudinary.config({
 //const upload = multer({ storage });
 const upload = multer({ dest: "temp/" });
 const app = express();
+
 app.use(cors({
   origin: "*"
 }));
@@ -33,7 +35,7 @@ app.use(cors({
 //app.use(helmet());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "frontend")));
-
+app.use("/api/admin", adminRoutes);
 
 function verifyAdmin(req, res, next) {
   const token = req.headers.authorization;
@@ -138,20 +140,20 @@ app.post("/profile", async (req, res) => {
     );
 
     if (existing.rows.length > 0) {
-      return res.Status(400).json({
+      return res.status(400).json({
         message: "Profile already exists"
       });
     }
 
 
     // 4. GET FORM DATA (NO user_id FROM FRONTEND)
-    const { fullname, age, gender, religion, caste, education, occupation, city, about_me, bio } = req.body;
+    const { fullname, age, gender, religion, caste, education, occupation, city, about_me, bio, height, color } = req.body;
 
     // 5. INSERT INTO DB
     await pool.query(
-      `INSERT INTO profiles(user_id, fullname, age, gender, religion, caste, education, occupation, city, about_me, bio)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)`,
-      [user_id, fullname, age, gender, religion, caste, education, occupation, city, about_me, bio]
+      `INSERT INTO profiles(user_id, fullname, age, gender, religion, caste, education, occupation, city, about_me, bio, height, color)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,12,13)`,
+      [user_id, fullname, age, gender, religion, caste, education, occupation, city, about_me, bio, height, color]
     );
 
     res.json({ message: "Profile Created Successfully" });
@@ -359,9 +361,42 @@ app.post("/interest", async (req, res) => {
   try {
     const { from_user, to_user } = req.body;
 
-    await pool.query(
-      "INSERT INTO interests(from_user, to_user) VALUES($1,$2)",
+    if (!from_user || !to_user) {
+      return res.status(400).json({
+        message: "Invalid data"
+      });
+    }
+
+    // OPTIONAL: prevent duplicate interest
+    const check = await pool.query(
+      "SELECT * FROM interests WHERE from_user=$1 AND to_user=$2",
       [from_user, to_user]
+    );
+
+    if (check.rows.length > 0) {
+      return res.status(400).json({
+        message: "Interest already sent"
+      });
+    }
+
+    // 1. Insert interest
+    await pool.query(
+      "INSERT INTO interests(from_user, to_user, status) VALUES($1,$2,$3)",
+      [from_user, to_user, "pending"]
+    );
+
+    // 2. Admin alert
+    await pool.query(
+      `
+      INSERT INTO admin_alerts(user1_id, user2_id, message, type)
+      VALUES ($1,$2,$3,$4)
+      `,
+      [
+        from_user,
+        to_user,
+        "Interest sent",
+        "interest"
+      ]
     );
 
     res.json({
@@ -398,7 +433,7 @@ app.put("/interests/:id", async (req, res) => {
     const { id } = req.params;
     const { status } = req.body;
 
-    const allowedStatus = ["accepted", "rejected", "onhold"];
+    const allowedStatus = ["pending","accepted","onhold"];
 
     if (!allowedStatus.includes(status)) {
       return res.status(400).json({
@@ -543,6 +578,31 @@ app.delete("/admin/user/:id", verifyAdmin, async (req, res) => {
     res.status(500).json({ message: "Error" });
   }
 });
+app.get("/admin/interests", verifyAdmin, async (req, res) => {
+  try {
+    const result = await pool.query(
+      "SELECT * FROM interests ORDER BY id DESC"
+    );
+
+    res.json(result.rows);
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Error" });
+  }
+});
+app.get("/admin/notifications", verifyAdmin, async (req, res) => {
+  try {
+    const result = await pool.query(
+      "SELECT * FROM admin_notifications ORDER BY id DESC LIMIT 10"
+    );
+
+    res.json(result.rows);
+
+  } catch (error) {
+    res.status(500).json({ message: "Error" });
+  }
+});
 app.get("/suggest/:userId", verifyToken, async (req, res) => {
   try {
     const  userId = req.user.id;
@@ -635,7 +695,9 @@ app.get("/profile", async (req, res) => {
         p.occupation,
         p.about_me,
         p.bio,
-        p.photo
+        p.photo,
+        p.height,
+        p.color
       FROM profiles p
       LEFT JOIN users u
       on p.user_id = u.id
@@ -666,13 +728,17 @@ app.put("/profile/:id", async (req, res) => {
       fullname,
       age,
       gender,
-      religion,
+      
+      
+    religion,
       caste,
       education,
       occupation,
       city,
       about_me,
-      bio
+      bio,
+      height,
+      color
     } = req.body;
 
     await pool.query(
@@ -688,8 +754,10 @@ app.put("/profile/:id", async (req, res) => {
         occupation=$7,
         city=$8,
         about_me=$9,
-        bio=$10
-      WHERE user_id=$11
+        bio=$10,
+        height=$11,
+        color=$12
+      WHERE user_id=$13
       `,
       [
         fullname,
@@ -702,6 +770,8 @@ app.put("/profile/:id", async (req, res) => {
         city,
         about_me,
         bio,
+        height,
+        color,
         id
       ]
     );

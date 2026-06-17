@@ -4,11 +4,27 @@
   <title>Admin Dashboard</title>
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
 <h2>Admin Dashboard</h2>
 
+<!-- 🔥 TOAST -->
+<div id="toast" style="
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #111827;
+  color: white;
+  padding: 12px;
+  border-radius: 8px;
+  display: none;
+  z-index: 9999;
+"></div>
+
+<!-- DASHBOARD CARDS -->
 <div class="card">
+
   <button onclick="location.href='admin-users.html'">
     Manage Users
   </button>
@@ -18,7 +34,51 @@
   <button onclick="location.href='admin-profiles.html'">
     Manage Profiles
   </button>
+
+  <br><br>
+
+  <button onclick="location.href='admin-interests.html'">
+    User Interests (Pending / Accepted / Onhold)
+  </button>
+
 </div>
+
+<!-- 🔥 JS FOR NOTIFICATIONS -->
+<script>
+let lastNotificationId = 0;
+
+async function checkNotifications() {
+  const res = await fetch("/admin/notifications", {
+    headers: {
+      "Authorization": localStorage.getItem("adminToken")
+    }
+  });
+
+  const data = await res.json();
+
+  if (data.length > 0) {
+    const latest = data[0];
+
+    if (latest.id !== lastNotificationId) {
+      lastNotificationId = latest.id;
+      showToast(latest.message);
+    }
+  }
+}
+
+function showToast(message) {
+  const toast = document.getElementById("toast");
+  toast.innerText = message;
+  toast.style.display = "block";
+
+  setTimeout(() => {
+    toast.style.display = "none";
+  }, 4000);
+}
+
+setInterval(checkNotifications, 3000);
+checkNotifications();
+</script>
 
 </body>
 </html>

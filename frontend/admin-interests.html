@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>User Interests</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h2>User Interest Management</h2>
+
+<select id="filter" onchange="loadData()">
+  <option value="all">All</option>
+  <option value="pending">Pending</option>
+  <option value="accepted">Accepted</option>
+  <option value="rejected">Rejected</option>
+  <option value="onhold">On Hold</option>
+</select>
+
+<div id="list">Loading...</div>
+
+<script>
+const token = localStorage.getItem("adminToken");
+
+async function loadData() {
+  const res = await fetch("https://aamatrimony.onrender.com/admin/interests", {
+    headers: {
+      "Authorization": token
+    }
+  });
+
+  const data = await res.json();
+  const filter = document.getElementById("filter").value;
+
+  let filtered = data;
+
+  if (filter !== "all") {
+    filtered = data.filter(i => i.status === filter);
+  }
+
+  document.getElementById("list").innerHTML = filtered.map(i => `
+    <div class="card">
+      <p><b>From:</b> ${i.from_user}</p>
+      <p><b>To:</b> ${i.to_user}</p>
+      <p><b>Status:</b> ${i.status}</p>
+
+      <button onclick="update(${i.id}, 'accepted')">Accept</button>
+      <button onclick="update(${i.id}, 'rejected')">Reject</button>
+      <button onclick="update(${i.id}, 'onhold')">On Hold</button>
+    </div>
+  `).join("");
+}
+
+async function update(id, status) {
+  await fetch("https://aamatrimony.onrender.com/interests/${id}", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ status })
+  });
+
+  loadData();
+}
+
+loadData();
+setInterval(loadData, 3000); // REAL-TIME
+</script>
+
+</body>
+</html>
