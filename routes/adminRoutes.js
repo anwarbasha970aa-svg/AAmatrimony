@@ -27,7 +27,7 @@ function verifyAdmin(req, res, next) {
 
 ---
 
-# 📊 ADMIN APIs
+//# 📊 ADMIN APIs
 
 // Get all users
 router.get("/users", verifyAdmin, async (req, res) => {
