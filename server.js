@@ -35,13 +35,13 @@ app.use(cors({
 //app.use(helmet());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "frontend")));
-router.get("/users", verifyAdmin, async (req, res) => {
-  const result = await pool.query(
-    "SELECT id, fullname, email, phone FROM users"
-  );
+//router.get("/users", verifyAdmin, async (req, res) => {
+ // const result = await pool.query(
+   // "SELECT id, fullname, email, phone FROM users"
+  //);
 
-  res.json(result.rows);
-});
+ // res.json(result.rows);
+//});
 
 app.use("/api/admin", adminRoutes);
 

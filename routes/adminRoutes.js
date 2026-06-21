@@ -30,7 +30,7 @@ function verifyAdmin(req, res, next) {
 
 // Get all users
 router.get("/users", verifyAdmin, async (req, res) => {
-  const result = await pool.query("SELECT * FROM users");
+  const result = await pool.query(  "SELECT id, fullname, email, phone FROM users");
   res.json(result.rows);
 });
 
