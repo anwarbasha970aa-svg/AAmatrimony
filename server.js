@@ -108,8 +108,8 @@ app.post("/register", async (req, res) => {
    const hashedPassword = await bcrypt.hash(password, 10);
 
 await pool.query(
-  "INSERT INTO users(fullname,email, phone, password) VALUES($1,$2,$3)",
-  [fullname, email, hashedPassword]
+  "INSERT INTO users(fullname,email, phone, password) VALUES($1,$2,$3,$4)",
+  [fullname, email, phone, hashedPassword]
 );
 
     res.json({
@@ -160,7 +160,7 @@ app.post("/profile", async (req, res) => {
     // 5. INSERT INTO DB
     await pool.query(
       `INSERT INTO profiles(user_id, fullname, age, gender, religion, caste, education, occupation, city, about_me, bio, height, color)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,12,13)`,
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)`,
       [user_id, fullname, age, gender, religion, caste, education, occupation, city, about_me, bio, height, color]
     );
 
