@@ -42,9 +42,14 @@
 
 <br><br>
 <script>
+  const token = localStorage.getItem("token");
+
+if (!token) {
+  window.location.href = "login.html";
+}
 const BASE_URL = "https://aamatrimony.onrender.com";
 // 🔐 CHECK LOGIN
-const token = localStorage.getItem("token");
+
 
 if (!token) {
   window.location.href = "index.html";
