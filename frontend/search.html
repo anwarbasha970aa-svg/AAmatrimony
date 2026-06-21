@@ -28,7 +28,12 @@ const BASE_URL = "https://aamatrimony.onrender.com";
         try {
 
             const response = await fetch(
-                `${BASE_URL}/profiles`
+                `${BASE_URL}/profiles`,
+                {
+                    headers: {
+                        Authorization: localStorage.getItem("token")
+                    }
+                }
             );
 
             const profiles = await response.json();
@@ -47,7 +52,7 @@ const BASE_URL = "https://aamatrimony.onrender.com";
                     <div class="card">
                       <img src="${profile.photo || 'https://via.placeholder.com/150'}" width="150">
 
-                       <h3>${profile.gender || "Profile"}</h3>
+                       <h3>${profile.fullname || "Profile"}</h3>
 
                         <p><b>Age:</b> ${profile.age || ""}</p>
 

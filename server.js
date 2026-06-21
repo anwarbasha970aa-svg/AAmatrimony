@@ -244,8 +244,16 @@ app.get("/profiles/age/:age", async (req, res) => {
 app.get("/profiles", async (req, res) => {
   try {
 
+    const token = req.headers.authorization;
+
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET
+    );
+
     const result = await pool.query(
-      "SELECT * FROM profiles"
+      "SELECT * FROM profiles WHERE user_id != $1",
+      [decoded.id]
     );
 
     res.json(result.rows);
